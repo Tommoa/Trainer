@@ -1,0 +1,8 @@
+*.o
+~*
+.vscode
+*.exe
+*.bin
+*.out
+*.gch
+bin/
