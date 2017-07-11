@@ -1,12 +1,10 @@
+#include "read_stream.hpp"
+
 #include "errors.hpp"
 #include "data_member.hpp"
 
-#include <istream>
-#include <ostream>
 #include <fstream>
 #include <string>
-#include <vector>
-#include <iostream>
 
 void read_stream(std::vector<data_member*>& data_member_list, std::istream& in, std::ostream& out, std::ostream& err) {
 	std::string line;
@@ -111,9 +109,4 @@ void read_stream(std::vector<data_member*>& data_member_list, std::istream& in, 
 			break;
 	}
 	return;
-}
-
-int main() {
-	std::vector<data_member*> data_member_list;
-	read_stream(data_member_list, std::cin, std::cout, std::cerr);
 }

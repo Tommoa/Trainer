@@ -1,3 +1,6 @@
+#ifndef __TRAINER_DATA_MEMBER_HPP__
+#define __TRAINER_DATA_MEMBER_HPP__
+
 #include <string>
 #include <typeinfo>
 #include <vector>
@@ -20,3 +23,4 @@ class data_member {
 	std::string get_data();
 	void set_data(std::string data);
 }; 
+#endif

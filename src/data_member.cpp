@@ -1,5 +1,7 @@
 #include "data_member.hpp"
 
+#include "errors.hpp"
+
 void data_member::str_to_type_id(std::string str) {
 	if (str == "string")
 		type = const_cast<std::type_info*>(&typeid(char*));
