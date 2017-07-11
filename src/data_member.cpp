@@ -33,7 +33,7 @@ std::string data_member::get_type() {
 	throw errors::types::type_not_found;
 }
 
-std::string data_member::get_data() { 
+std::string data_member::get_data() {
 	if (*type == typeid(char*))
 		return (data.str);
 	if (*type == typeid(int))

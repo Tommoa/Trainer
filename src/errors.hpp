@@ -3,12 +3,8 @@
 
 #include <ostream>
 
-namespace errors { 
-	enum class types {
-		invalid_set,
-		invalid_file_type,
-		type_not_found
-	};
+namespace errors {
+	enum class types { invalid_set, invalid_file_type, type_not_found };
 	void dispatcher(std::ostream& out);
 }
 #endif

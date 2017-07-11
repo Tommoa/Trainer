@@ -7,5 +7,6 @@
 #include <ostream>
 #include <vector>
 
-void read_stream(std::vector<data_member*>& data_member_list, std::istream& in, std::ostream& out, std::ostream& err);
- #endif
+void read_stream(std::vector<data_member*>& data_member_list, std::istream& in,
+				 std::ostream& out, std::ostream& err);
+#endif
