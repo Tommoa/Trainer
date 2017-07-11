@@ -30,10 +30,11 @@ std::string data_member::get_type() {
 		return "double";
 	if (*type == typeid(bool))
 		return "bool";
+	throw errors::types::type_not_found;
 }
 
 std::string data_member::get_data() { 
-	if (*type == typeid(std::string))
+	if (*type == typeid(char*))
 		return (data.str);
 	if (*type == typeid(int))
 		return std::to_string(data.integer);
@@ -45,10 +46,11 @@ std::string data_member::get_data() {
 		return std::to_string(data.prec);
 	if (*type == typeid(bool))
 		return std::to_string(data.boolean);
+	throw errors::types::type_not_found;
 }
 
 void data_member::set_data(std::string data) {
-	if (*type == typeid(std::string)) {
+	if (*type == typeid(char*)) {
 		this->data.str = const_cast<char*>(data.c_str());
 		return;
 	}
@@ -70,5 +72,7 @@ void data_member::set_data(std::string data) {
 	}
 	if (*type == typeid(bool)) {
 		this->data.boolean = data == "true";
+		return;
 	}
+	throw errors::types::type_not_found;
 }
