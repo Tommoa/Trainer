@@ -5,6 +5,7 @@
 
 #include <fstream>
 #include <string>
+#include <strstream>
 
 void read_stream(std::vector<data_member*>& data_member_list, std::istream& in,
 				 std::ostream& out, std::ostream& err) {
@@ -25,11 +26,12 @@ void read_stream(std::vector<data_member*>& data_member_list, std::istream& in,
 				line.find(' ', last);
 				temp.name = line.substr(last, current - last);
 				last = current + 1;
-				while ((current = line.find(' ', last)) > last) {
-					temp.offsets.push_back(std::stoll(line.substr(last, current - last)));
-					last = current + 1;
+				std::istrstream ss(const_cast<char*>(line.substr(last, line.size()).c_str()), line.size() - last);
+				while (ss.tellg() != std::ios::end) {
+					unsigned long offset;
+					ss >> std::hex >> offset;
+					temp.offsets.push_back(offset);
 				}
-				temp.offsets.push_back(std::stoll(line.substr(last, line.size())));
 				data_member_list.push_back(&temp);
 			} catch (...) {
 				errors::dispatcher(err);
