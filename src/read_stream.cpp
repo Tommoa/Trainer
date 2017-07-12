@@ -23,11 +23,11 @@ void read_stream(std::vector<data_member*>& data_member_list, std::istream& in,
 				data_member temp;
 				temp.str_to_type_id(line.substr(last, current - last));
 				last = current + 1;
-				line.find(' ', last);
+				current = line.find(' ', last);
 				temp.name = line.substr(last, current - last);
 				last = current + 1;
 				std::istringstream ss(line.substr(last, line.size()));
-				while (ss.tellg() != std::ios::end) {
+				while (ss.rdbuf()->in_avail() != 0) {
 					unsigned long offset;
 					ss >> std::hex >> offset;
 					temp.offsets.push_back(offset);
@@ -44,11 +44,16 @@ void read_stream(std::vector<data_member*>& data_member_list, std::istream& in,
 				current = line.find(' ', last);
 				auto n = line.substr(last, current - last);
 				last = current + 1;
+				bool found = false;
 				for (auto member : data_member_list) {
 					if (member->name == n) {
-						member->set_data(line.substr(last, line.size()));
+						member->set_data(line.substr(last, line.size())); 
+						found = true;
+						break;
 					}
 				}
+				if (!found)
+					throw errors::types::not_a_variable;
 			} catch (...) {
 				errors::dispatcher(err);
 			}
@@ -60,11 +65,16 @@ void read_stream(std::vector<data_member*>& data_member_list, std::istream& in,
 				current = line.find(' ', last);
 				auto n = line.substr(last, current - last);
 				last = current + 1;
+				bool found = false;
 				for (auto member : data_member_list) {
 					if (member->name == n) {
-						out << member->get_data() << std::endl;
+						out << member->get_data() << std::endl; 
+						found = true;
+						break;
 					}
 				}
+				if (!found)
+					throw errors::types::not_a_variable;
 			} catch (...) {
 				errors::dispatcher(err);
 			}

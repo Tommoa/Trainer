@@ -20,6 +20,10 @@ void errors::dispatcher(std::ostream& out) {
 					   "successfully"
 					<< std::endl;
 				break;
+			case types::not_a_variable:
+				out << "Attempted to call a variable that doesn't exist"
+					<< std::endl;
+				break;
 			default:
 				out << "Unknown error" << std::endl;
 				break;
