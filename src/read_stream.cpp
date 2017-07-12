@@ -24,6 +24,12 @@ void read_stream(std::vector<data_member*>& data_member_list, std::istream& in,
 				last = current + 1;
 				line.find(' ', last);
 				temp.name = line.substr(last, current - last);
+				last = current + 1;
+				while ((current = line.find(' ', last)) > last) {
+					temp.offsets.push_back(std::stoll(line.substr(last, current - last)));
+					last = current + 1;
+				}
+				temp.offsets.push_back(std::stoll(line.substr(last, line.size())));
 				data_member_list.push_back(&temp);
 			} catch (...) {
 				errors::dispatcher(err);
