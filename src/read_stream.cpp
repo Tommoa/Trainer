@@ -7,7 +7,7 @@
 #include <string>
 #include <sstream>
 
-void read_stream(std::vector<data_member*>& data_member_list, std::istream& in,
+void read_stream(std::vector<data_member>& data_member_list, std::istream& in,
 				 std::ostream& out, std::ostream& err) {
 	std::string line;
 	while (true) {
@@ -32,7 +32,7 @@ void read_stream(std::vector<data_member*>& data_member_list, std::istream& in,
 					ss >> std::hex >> offset;
 					temp.offsets.push_back(offset);
 				}
-				data_member_list.push_back(&temp);
+				data_member_list.push_back(temp);
 			} catch (...) {
 				errors::dispatcher(err);
 			}
@@ -45,9 +45,9 @@ void read_stream(std::vector<data_member*>& data_member_list, std::istream& in,
 				auto n = line.substr(last, current - last);
 				last = current + 1;
 				bool found = false;
-				for (auto member : data_member_list) {
-					if (member->name == n) {
-						member->set_data(line.substr(last, line.size())); 
+				for (auto &member : data_member_list) {
+					if (member.name == n) {
+						member.set_data(line.substr(last, line.size())); 
 						found = true;
 						break;
 					}
@@ -66,9 +66,9 @@ void read_stream(std::vector<data_member*>& data_member_list, std::istream& in,
 				auto n = line.substr(last, current - last);
 				last = current + 1;
 				bool found = false;
-				for (auto member : data_member_list) {
-					if (member->name == n) {
-						out << member->get_data() << std::endl; 
+				for (auto &member : data_member_list) {
+					if (member.name == n) {
+						out << member.get_data() << std::endl; 
 						found = true;
 						break;
 					}
@@ -94,10 +94,10 @@ void read_stream(std::vector<data_member*>& data_member_list, std::istream& in,
 								   type == "binary" ? std::ios::binary
 													: std::ios::trunc);
 				for (auto member : data_member_list) {
-					file << "create " << member->get_type() << " "
-						 << member->name;
+					file << "create " << member.get_type() << " "
+						 << member.name;
 					file << std::endl;
-					file << "set " << member->name << " " << member->get_data()
+					file << "set " << member.name << " " << member.get_data()
 						 << std::endl;
 				}
 				file.close();
