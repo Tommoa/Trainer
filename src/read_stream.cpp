@@ -27,9 +27,8 @@ void read_stream(std::vector<data_member>& data_member_list, std::istream& in,
 				temp.name = line.substr(last, current - last);
 				last = current + 1;
 				std::istringstream ss(line.substr(last, line.size()));
-				while (ss.rdbuf()->in_avail() != 0) {
-					unsigned long offset;
-					ss >> std::hex >> offset;
+				size_t offset;
+				while ((ss >> std::hex >> offset)) {
 					temp.offsets.push_back(offset);
 				}
 				data_member_list.push_back(temp);
