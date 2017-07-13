@@ -29,7 +29,7 @@ void read_stream(std::vector<data_member>& data_member_list, std::istream& in,
 				std::istringstream ss(line.substr(last, line.size()));
 				size_t offset;
 				while ((ss >> std::hex >> offset)) {
-					temp.offsets.push_back(offset);
+					temp.offsets.push_back(std::move(offset));
 				}
 				data_member_list.push_back(temp);
 			} catch (...) {
