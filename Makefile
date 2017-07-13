@@ -1,19 +1,17 @@
 COMPILER = clang++
-OBJS = data_member.o errors.o read_stream.o main.o
 OUTPUT_NAME = main
+OUTPUT_DIRECTORY = bin
 COMPILER_FLAGS = -std=c++1z -c -O3
-
-build: $(OBJS)
-	$(COMPILER) $(OBJS) -o $(OUTPUT_NAME)
-
-debug: $(OBJS)
-	$(COMPILER) $(OBJS) -o $(OUTPUT_NAME) -g
+OBJS = data_member.o errors.o read_stream.o main.o
 
 clean: build
 	rm $(OBJS)
 
+build: $(OBJS)
+	$(COMPILER) $(OBJS) -o $(OUTPUT_DIRECTORY)/$(OUTPUT_NAME)
+
 clear:
-	\rm *.o *~ $(OUTPUT_NAME)
+	\rm *.o $(OUTPUT_DIRECTORY)/$(OUTPUT_NAME)
 
 data_member.o: src/data_member.cpp src/data_member.hpp
 	$(COMPILER) $(COMPILER_FLAGS) src/data_member.cpp
