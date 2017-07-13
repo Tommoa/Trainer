@@ -8,7 +8,8 @@ namespace errors {
 		invalid_set,
 		invalid_file_type,
 		type_not_found,
-		not_a_variable
+		not_a_variable,
+		not_a_command
 	};
 	void dispatcher(std::ostream& out);
 }
