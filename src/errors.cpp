@@ -27,6 +27,9 @@ void errors::dispatcher(std::ostream& out) {
 			case types::not_a_command:
 				out << "Call is not a defined command" << std::endl;
 				break;
+			case types::incomplete_command:
+				out << "The command given is incomplete" << std::endl;
+				break;
 			default:
 				out << "Unknown error" << std::endl;
 				break;
