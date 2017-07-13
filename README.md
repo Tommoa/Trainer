@@ -7,5 +7,3 @@ An extendable trainer for games
 `get` `name` - Gets the value of variable `name`.  
 `export` `filetype` `filename` - exports a file `filename` with either the file type `binary` or `file`.  
 `import` `filetype` `filename` - imports a file `filename` into the current session. File type is either `binary` or `file`.  
-
-NOTE: Offsets for `create` do not work at the moment, so just omit them from files
