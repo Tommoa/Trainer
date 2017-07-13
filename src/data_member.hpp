@@ -16,9 +16,8 @@ class data_member {
 	} data;
 
   public:
-	std::string name; // The name of the data_member
-	std::vector<size_t>
-		offsets; // The memory offsets to get to the data member
+	std::string name;			 // The name of the data_member
+	std::vector<size_t> offsets; // The memory offsets to get to the data member
 	std::type_info* type;
 	void str_to_type_id(std::string str);
 	std::string get_type();
