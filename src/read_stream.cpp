@@ -4,8 +4,8 @@
 #include "errors.hpp"
 
 #include <fstream>
-#include <string>
 #include <sstream>
+#include <string>
 
 void read_stream(std::vector<data_member>& data_member_list, std::istream& in,
 				 std::ostream& out, std::ostream& err) {
@@ -44,9 +44,9 @@ void read_stream(std::vector<data_member>& data_member_list, std::istream& in,
 				auto n = line.substr(last, current - last);
 				last = current + 1;
 				bool found = false;
-				for (auto &member : data_member_list) {
+				for (auto& member : data_member_list) {
 					if (member.name == n) {
-						member.set_data(line.substr(last, line.size())); 
+						member.set_data(line.substr(last, line.size()));
 						found = true;
 						break;
 					}
@@ -65,9 +65,9 @@ void read_stream(std::vector<data_member>& data_member_list, std::istream& in,
 				auto n = line.substr(last, current - last);
 				last = current + 1;
 				bool found = false;
-				for (auto &member : data_member_list) {
+				for (auto& member : data_member_list) {
 					if (member.name == n) {
-						out << member.get_data() << std::endl; 
+						out << member.get_data() << std::endl;
 						found = true;
 						break;
 					}
@@ -128,8 +128,7 @@ void read_stream(std::vector<data_member>& data_member_list, std::istream& in,
 			break;
 		try {
 			throw errors::types::not_a_command;
-		}
-		catch (...) {
+		} catch (...) {
 			errors::dispatcher(err);
 		}
 	}
