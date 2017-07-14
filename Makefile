@@ -2,7 +2,7 @@ COMPILER = clang++
 OUTPUT_NAME = main
 OUTPUT_DIRECTORY = bin
 COMPILER_FLAGS = -std=c++1z -c -O3
-OBJS = data_member.o errors.o read_stream.o main.o
+OBJS = data_member.o errors.o interpreter.o variables.o main.o
 
 clean: build
 	rm $(OBJS)
@@ -19,8 +19,11 @@ data_member.o: src/data_member.cpp src/data_member.hpp
 errors.o: src/errors.cpp src/errors.hpp
 	$(COMPILER) $(COMPILER_FLAGS) src/errors.cpp
 
-read_stream.o: src/read_stream.cpp src/read_stream.hpp
-	$(COMPILER) $(COMPILER_FLAGS) src/read_stream.cpp
+interpreter.o: src/interpreter.cpp src/interpreter.hpp
+	$(COMPILER) $(COMPILER_FLAGS) src/interpreter.cpp
 
-main.o: src/main.cpp src/read_stream.hpp src/data_member.hpp src/errors.hpp
+variables.o: src/interpreter.hpp src/variables.hpp src/variables.cpp src/Snippets/defer.hpp
+	$(COMPILER) $(COMPILER_FLAGS) src/variables.cpp
+
+main.o: src/main.cpp src/interpreter.hpp src/data_member.hpp src/errors.hpp
 	$(COMPILER) $(COMPILER_FLAGS) src/main.cpp

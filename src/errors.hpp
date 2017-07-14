@@ -14,4 +14,5 @@ namespace errors {
 	};
 	void dispatcher(std::ostream& out);
 }
+
 #endif
