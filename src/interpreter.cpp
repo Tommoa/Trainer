@@ -7,7 +7,6 @@
 
 #include "Snippets/defer.hpp"
 
-#include <fstream>
 #include <sstream>
 
 void interpreter::read_stream(std::vector<data_member>& data_member_list,
