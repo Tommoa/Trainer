@@ -1,6 +1,5 @@
 #include "variables.hpp"
 
-#include "data_member.hpp"
 #include "errors.hpp"
 
 void variables::create(std::vector<data_member>& data_member_list,
