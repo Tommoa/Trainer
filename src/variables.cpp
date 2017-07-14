@@ -1,14 +1,14 @@
 #include "variables.hpp"
 
 #include "Snippets/defer.hpp"
-#include "errors.hpp"
 #include "data_member.hpp"
+#include "errors.hpp"
 
-#include <vector>
 #include <istream>
+#include <vector>
 
 void variables::create(std::vector<data_member>& data_member_list,
-					 std::istream& ss) {
+					   std::istream& ss) {
 	data_member temp;
 
 	std::string type;
@@ -30,7 +30,7 @@ void variables::create(std::vector<data_member>& data_member_list,
 }
 
 void variables::set(std::vector<data_member>& data_member_list,
-				  std::istream& ss) {
+					std::istream& ss) {
 	std::string name;
 	if (!(ss >> name))
 		throw errors::types::incomplete_command;
@@ -48,7 +48,8 @@ void variables::set(std::vector<data_member>& data_member_list,
 	throw errors::types::not_a_variable;
 }
 
-std::string variables::get(std::vector<data_member>& data_member_list, std::istream& ss) {
+std::string variables::get(std::vector<data_member>& data_member_list,
+						   std::istream& ss) {
 	std::string name;
 	if (!(ss >> name))
 		throw errors::types::incomplete_command;

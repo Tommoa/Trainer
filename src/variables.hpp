@@ -3,9 +3,9 @@
 
 #include "data_member.hpp"
 
-#include <vector>
 #include <istream>
 #include <ostream>
+#include <vector>
 
 namespace variables {
 
@@ -13,8 +13,8 @@ namespace variables {
 
 	void set(std::vector<data_member>& data_member_list, std::istream& in);
 
-	std::string get(std::vector<data_member>& data_member_list, std::istream& in);
-
+	std::string get(std::vector<data_member>& data_member_list,
+					std::istream& in);
 }
 
 #endif

@@ -53,8 +53,9 @@ void import_file(std::vector<data_member>& data_member_list, std::istream& in,
 	interpreter::read_stream(data_member_list, file, out, err);
 }
 
-void interpreter::read_stream(std::vector<data_member>& data_member_list, std::istream& in,
-				 std::ostream& out, std::ostream& err) {
+void interpreter::read_stream(std::vector<data_member>& data_member_list,
+							  std::istream& in, std::ostream& out,
+							  std::ostream& err) {
 	std::string line;
 	while (true) {
 		std::getline(in, line);
