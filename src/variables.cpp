@@ -7,7 +7,7 @@
 #include <vector>
 #include <istream>
 
-void variables::create_variable(std::vector<data_member>& data_member_list,
+void variables::create(std::vector<data_member>& data_member_list,
 					 std::istream& ss) {
 	data_member temp;
 
@@ -29,7 +29,7 @@ void variables::create_variable(std::vector<data_member>& data_member_list,
 	data_member_list.push_back(std::move(temp));
 }
 
-void variables::set_variable(std::vector<data_member>& data_member_list,
+void variables::set(std::vector<data_member>& data_member_list,
 				  std::istream& ss) {
 	std::string name;
 	if (!(ss >> name))
@@ -48,7 +48,7 @@ void variables::set_variable(std::vector<data_member>& data_member_list,
 	throw errors::types::not_a_variable;
 }
 
-std::string variables::get_variable(std::vector<data_member>& data_member_list, std::istream& ss) {
+std::string variables::get(std::vector<data_member>& data_member_list, std::istream& ss) {
 	std::string name;
 	if (!(ss >> name))
 		throw errors::types::incomplete_command;

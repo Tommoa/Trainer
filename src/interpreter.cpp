@@ -64,7 +64,7 @@ void interpreter::read_stream(std::vector<data_member>& data_member_list, std::i
 			continue;
 		if (command == "create") {
 			try {
-				variables::create_variable(data_member_list, ss);
+				variables::create(data_member_list, ss);
 			} catch (...) {
 				errors::dispatcher(err);
 			}
@@ -72,7 +72,7 @@ void interpreter::read_stream(std::vector<data_member>& data_member_list, std::i
 		}
 		if (command == "set") {
 			try {
-				variables::set_variable(data_member_list, ss);
+				variables::set(data_member_list, ss);
 			} catch (...) {
 				errors::dispatcher(err);
 			}
@@ -80,7 +80,7 @@ void interpreter::read_stream(std::vector<data_member>& data_member_list, std::i
 		}
 		if (command == "get") {
 			try {
-				out << variables::get_variable(data_member_list, ss) << std::endl;
+				out << variables::get(data_member_list, ss) << std::endl;
 			} catch (...) {
 				errors::dispatcher(err);
 			}
