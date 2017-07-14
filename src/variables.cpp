@@ -1,11 +1,7 @@
 #include "variables.hpp"
 
-#include "Snippets/defer.hpp"
 #include "data_member.hpp"
 #include "errors.hpp"
-
-#include <istream>
-#include <vector>
 
 void variables::create(std::vector<data_member>& data_member_list,
 					   std::istream& ss) {

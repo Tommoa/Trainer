@@ -4,7 +4,6 @@
 #include "data_member.hpp"
 
 #include <istream>
-#include <ostream>
 #include <vector>
 
 namespace variables {
