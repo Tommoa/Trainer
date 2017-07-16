@@ -1,0 +1,1 @@
+add_executable(Trainer src/Snippets/defer.hpp src/data_member.hpp src/data_member.cpp src/errors.cpp src/errors.hpp src/main.cpp src/interpreter.cpp src/interpreter.hpp src/porter.cpp src/porter.hpp src/variables.cpp src/variables.hpp)
