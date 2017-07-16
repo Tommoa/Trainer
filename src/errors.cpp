@@ -30,6 +30,9 @@ void errors::dispatcher(std::ostream& out) {
 			case types::incomplete_command:
 				out << "The command given is incomplete" << std::endl;
 				break;
+			case types::invalid_memory:
+				out << "The program attempted to access invalid memory"
+					<< std::endl;
 			default:
 				out << "Unknown error" << std::endl;
 				break;

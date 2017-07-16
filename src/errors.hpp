@@ -11,6 +11,7 @@ namespace errors {
 		not_a_variable,
 		not_a_command,
 		incomplete_command,
+		invalid_memory,
 	};
 	void dispatcher(std::ostream& out);
 }
