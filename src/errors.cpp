@@ -33,6 +33,11 @@ void errors::dispatcher(std::ostream& out) {
 			case types::invalid_memory:
 				out << "The program attempted to access invalid memory"
 					<< std::endl;
+				break;
+			case types::handle_not_set: 
+				out << "The handle for this variable hasn't been set yet"
+					<< std::endl;
+				break;
 			default:
 				out << "Unknown error" << std::endl;
 				break;

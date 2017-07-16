@@ -6,22 +6,38 @@
 
 #include <fstream>
 
+#ifdef _MSC_VER
+const std::wstring binary_file = L"binary";
+const std::wstring standard_file = L"file";
+#else
+const std::string binary_file = "binary";
+const std::string standard_file = "file";
+#endif
+
 void porter::stream_export(std::vector<data_member>& data_member_list,
+#ifdef _MSC_VER
+						   std::wistream& in) {
+	std::wstring file_format, filename;
+#else
 						   std::istream& in) {
-	std::string file_format;
+	std::string file_format, filename;
+#endif
 	if (!(in >> file_format))
 		throw errors::types::incomplete_command;
 
-	std::string filename;
 	if (!(in >> filename))
 		throw errors::types::incomplete_command;
 
-	if (file_format != "binary" && file_format != "file") {
+	if (file_format != binary_file && file_format != standard_file) {
 		throw errors::types::invalid_file_type;
 	}
 
+#ifdef _MSC_VER
+	std::wofstream file(
+#else
 	std::ofstream file(
-		filename, file_format == "binary" ? std::ios::binary : std::ios::trunc);
+#endif
+		filename, file_format == binary_file ? std::ios::binary : std::ios::trunc);
 
 	defer { file.close(); }; // Ensure we close the file regardless of errors
 

@@ -8,6 +8,12 @@
 
 namespace variables {
 
+#ifdef _MSC_VER
+	static std::wstring name_of_process;
+#else
+	static std::string name_of_process;
+#endif
+
 	void create(std::vector<data_member>& data_member_list, std::istream& in);
 
 	void set(std::vector<data_member>& data_member_list, std::istream& in);

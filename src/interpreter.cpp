@@ -9,18 +9,53 @@
 
 #include <sstream>
 
+#ifdef _MSC_VER
+const std::wstring new_executable_command = L"[[";
+const std::wstring create_variable_command = L"create";
+const std::wstring set_variable_command = L"set";
+const std::wstring get_variable_command = L"get";
+const std::wstring export_variables_command = L"export";
+const std::wstring import_variables_command = L"import";
+const std::wstring exit_command = L"exit";
+#else
+const std::string new_executable_command = "[[";
+const std::string create_variable_command = "create";
+const std::string set_variable_command = "set";
+const std::string get_variable_command = "get";
+const std::string export_variables_command = "export";
+const std::string import_variables_command = "import";
+const std::string exit_command = "exit";
+#endif
+
 void interpreter::read_stream(std::vector<data_member>& data_member_list,
-							  std::istream& in, std::ostream& out,
+#ifdef _MSC_VER 
+	std::wistream& in
+#else 
+	std::istream& in
+#endif
+	, std::ostream& out,
 							  std::ostream& err) {
+#ifdef _MSC_VER
+	std::wstring line;
+#else
 	std::string line;
+#endif
 	while (true) {
 		out << " > ";
 		std::getline(in, line);
+#ifdef _MSC_VER
+		std::wistringstream ss(line);
+		std::wstring command;
+#else
 		std::istringstream ss(line);
 		std::string command;
+#endif 
 		if (!(ss >> command)) // Empty line, just continue.
 			continue;
-		if (command == "create") {
+		if (command.substr(0, 2) == new_executable_command) {
+			variables::name_of_process = ss.str().substr(2, ss.str().length() - 4);
+		}
+		if (command == create_variable_command) {
 			try {
 				variables::create(data_member_list, ss);
 			} catch (...) {
@@ -28,7 +63,7 @@ void interpreter::read_stream(std::vector<data_member>& data_member_list,
 			}
 			continue;
 		}
-		if (command == "set") {
+		if (command == set_variable_command) {
 			try {
 				variables::set(data_member_list, ss);
 			} catch (...) {
@@ -36,7 +71,7 @@ void interpreter::read_stream(std::vector<data_member>& data_member_list,
 			}
 			continue;
 		}
-		if (command == "get") {
+		if (command == get_variable_command) {
 			try {
 				out << variables::get(data_member_list, ss) << std::endl;
 			} catch (...) {
@@ -44,7 +79,7 @@ void interpreter::read_stream(std::vector<data_member>& data_member_list,
 			}
 			continue;
 		}
-		if (command == "export") {
+		if (command == export_variables_command) {
 			try {
 				porter::stream_export(data_member_list, ss);
 			} catch (...) {
@@ -52,7 +87,7 @@ void interpreter::read_stream(std::vector<data_member>& data_member_list,
 			}
 			continue;
 		}
-		if (command == "import") {
+		if (command == import_variables_command) {
 			try {
 				porter::stream_import(data_member_list, ss, out, err);
 			} catch (...) {
@@ -60,7 +95,7 @@ void interpreter::read_stream(std::vector<data_member>& data_member_list,
 			}
 			continue;
 		}
-		if (command == "exit")
+		if (command == exit_command)
 			break;
 		try {
 			throw errors::types::not_a_command;
