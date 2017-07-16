@@ -76,3 +76,30 @@ void data_member::set_data(std::string data) {
 	}
 	throw errors::types::type_not_found;
 }
+
+// TODO: Make this function work without injection.
+void data_member::update_data() {
+	size_t* offset = 0;
+	for (auto a : offsets) { 
+		offset = offset + a;
+		offset = reinterpret_cast<size_t*>(*offset);
+	}
+	if (*type == typeid(char*)) {
+		this->data.str = reinterpret_cast<char*>(offset);
+	}
+	if (*type == typeid(int)) {
+		this->data.integer = *reinterpret_cast<int*>(offset);
+	}
+	if (*type == typeid(long)) {
+		this->data.long_int = *reinterpret_cast<long*>(offset);
+	}
+	if (*type == typeid(float)) { 
+		this->data.floating = *reinterpret_cast<float*>(offset);
+	}
+	if (*type == typeid(double)) {
+		this->data.prec = *reinterpret_cast<double*>(offset);
+	}
+	if (*type == typeid(bool)) {
+		this->data.boolean = *reinterpret_cast<bool*>(offset);
+	}
+}

@@ -23,5 +23,6 @@ class data_member {
 	std::string get_type();
 	std::string get_data();
 	void set_data(std::string data);
+	void update_data();
 };
 #endif
