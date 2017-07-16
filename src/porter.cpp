@@ -13,7 +13,7 @@ void porter::stream_export(std::vector<data_member>& data_member_list,
 		throw errors::types::incomplete_command;
 
 	std::string filename;
-	if (!(in >> file_format))
+	if (!(in >> filename))
 		throw errors::types::incomplete_command;
 
 	if (file_format != "binary" && file_format != "file") {
