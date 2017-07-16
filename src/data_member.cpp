@@ -2,6 +2,10 @@
 
 #include "errors.hpp"
 
+#ifdef _MSC_VER
+#include <Windows.h>
+#endif
+
 void data_member::str_to_type_id(std::string str) {
 	if (str == "string")
 		type = const_cast<std::type_info*>(&typeid(char*));
@@ -79,13 +83,24 @@ void data_member::set_data(std::string data) {
 
 // TODO: Make this function work without injection.
 void data_member::update_data() {
-	size_t* offset = 0;
+	size_t offset = 0;
 	for (auto a : offsets) { 
 		offset = offset + a;
-		offset = reinterpret_cast<size_t*>(*offset);
+#ifdef _MSC_VER
+		bool success = true;
+		ReadProcessMemory(handle, offset, &offset, sizeof(size_t), &success);
+		if (!success)
+			throw errors::types::invalid_memory;
+#else
+#endif
 	}
 	if (*type == typeid(char*)) {
+#ifdef _MSC_VER
+		bool success = true;
+		ReadProcessMemory(handle, offset, &this->data.str, sizeof(char*), &success);
+#else
 		this->data.str = reinterpret_cast<char*>(offset);
+#endif
 	}
 	if (*type == typeid(int)) {
 		this->data.integer = *reinterpret_cast<int*>(offset);

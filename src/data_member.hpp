@@ -15,6 +15,8 @@ class data_member {
 		bool boolean;
 	} data;
 
+	size_t handle = 0;
+
   public:
 	std::string name;			 // The name of the data_member
 	std::vector<size_t> offsets; // The memory offsets to get to the data member
