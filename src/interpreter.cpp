@@ -14,6 +14,7 @@ void interpreter::read_stream(std::vector<data_member>& data_member_list,
 							  std::ostream& err) {
 	std::string line;
 	while (true) {
+		out << " > ";
 		std::getline(in, line);
 		std::istringstream ss(line);
 		std::string command;
