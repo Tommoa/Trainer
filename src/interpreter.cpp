@@ -2,8 +2,8 @@
 
 #include "data_member.hpp"
 #include "errors.hpp"
-#include "variables.hpp"
 #include "porter.hpp"
+#include "variables.hpp"
 
 #include "Snippets/defer.hpp"
 
@@ -28,16 +28,13 @@ const std::string exit_command = "exit";
 #endif
 
 void interpreter::read_stream(std::vector<data_member>& data_member_list,
-#ifdef _MSC_VER 
-	std::wistream& in
-#else 
-	std::istream& in
-#endif
-	, std::ostream& out,
-							  std::ostream& err) {
 #ifdef _MSC_VER
+							  std::wistream& in, std::wostream& out,
+							  std::wostream& err) {
 	std::wstring line;
 #else
+							  std::istream& in, std::ostream& out,
+							  std::ostream& err) {
 	std::string line;
 #endif
 	while (true) {
@@ -49,11 +46,12 @@ void interpreter::read_stream(std::vector<data_member>& data_member_list,
 #else
 		std::istringstream ss(line);
 		std::string command;
-#endif 
+#endif
 		if (!(ss >> command)) // Empty line, just continue.
 			continue;
 		if (command.substr(0, 2) == new_executable_command) {
-			variables::name_of_process = ss.str().substr(2, ss.str().length() - 4);
+			variables::name_of_process =
+				ss.str().substr(2, ss.str().length() - 4);
 		}
 		if (command == create_variable_command) {
 			try {

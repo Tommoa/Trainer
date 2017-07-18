@@ -10,10 +10,9 @@
 namespace interpreter {
 	void read_stream(std::vector<data_member>& data_member_list,
 #ifdef _MSC_VER
-		std::wistream& in,
+					 std::wistream& in, std::wostream& out, std::wostream& err);
 #else
-		std::istream& in,
+					 std::istream& in, std::ostream& out, std::ostream& err);
 #endif
-		std::ostream& out, std::ostream& err);
 }
 #endif

@@ -3,15 +3,22 @@
 #include "errors.hpp"
 
 void variables::create(std::vector<data_member>& data_member_list,
+#ifdef _MSC_VER
+					   std::wistream& ss) {
+	std::wstring type;
+	std::wstring name;
+#else
 					   std::istream& ss) {
+	std::string type;
+	std::string name;
+#endif
+
 	data_member temp;
 
-	std::string type;
 	if (!(ss >> type))
 		throw errors::types::incomplete_command;
 	temp.str_to_type_id(type);
 
-	std::string name;
 	if (!(ss >> name))
 		throw errors::types::incomplete_command;
 	temp.name = name;
@@ -29,7 +36,8 @@ void variables::create(std::vector<data_member>& data_member_list,
 			temp.handle = 0;
 		else {
 			auto pid = GetWindowThreadProcessId(window_handle, NULL);
-			temp.handle = reinterpret_cast<size_t>(OpenProcess(PROCESS_ALL_ACCESS, false, pid));
+			temp.handle = reinterpret_cast<size_t>(
+				OpenProcess(PROCESS_ALL_ACCESS, false, pid));
 		}
 #else
 #endif
@@ -39,12 +47,18 @@ void variables::create(std::vector<data_member>& data_member_list,
 }
 
 void variables::set(std::vector<data_member>& data_member_list,
+#ifdef _MSC_VER
+					std::wistream& ss) {
+	std::wstring name, to;
+#else
 					std::istream& ss) {
 	std::string name;
+	std::string to;
+#endif
+
 	if (!(ss >> name))
 		throw errors::types::incomplete_command;
 
-	std::string to;
 	if (!(ss >> to))
 		throw errors::types::incomplete_command;
 
@@ -58,8 +72,14 @@ void variables::set(std::vector<data_member>& data_member_list,
 }
 
 std::string variables::get(std::vector<data_member>& data_member_list,
+#ifdef _MSC_VER
+						   std::wistream& ss) {
+	std::wstring name;
+#else
 						   std::istream& ss) {
 	std::string name;
+#endif
+
 	if (!(ss >> name))
 		throw errors::types::incomplete_command;
 

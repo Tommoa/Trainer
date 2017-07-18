@@ -37,7 +37,8 @@ void porter::stream_export(std::vector<data_member>& data_member_list,
 #else
 	std::ofstream file(
 #endif
-		filename, file_format == binary_file ? std::ios::binary : std::ios::trunc);
+		filename,
+		file_format == binary_file ? std::ios::binary : std::ios::trunc);
 
 	defer { file.close(); }; // Ensure we close the file regardless of errors
 
@@ -49,21 +50,32 @@ void porter::stream_export(std::vector<data_member>& data_member_list,
 }
 
 void porter::stream_import(std::vector<data_member>& data_member_list,
+#ifdef _MSC_VER
+						   std::wstream& in, std::wostream& out,
+						   std::wostream& err) {
+	std::wstring mode;
+	std::wstring filename;
+#else
 						   std::istream& in, std::ostream& out,
 						   std::ostream& err) {
 	std::string mode;
+	std::string filename;
+#endif
 	if (!(in >> mode))
 		throw errors::types::incomplete_command;
 
-	std::string filename;
 	if (!(in >> filename))
 		throw errors::types::incomplete_command;
 
 	if (mode != "binary" && mode != "file") {
 		throw errors::types::invalid_file_type;
 	}
-	std::ifstream file(filename,
-					   mode == "binary" ? std::ios::binary : std::ios::in);
+#ifdef _MSC_VER
+	std::wifstream file(
+#else
+	std::ifstream file(
+#endif
+		filename, mode == "binary" ? std::ios::binary : std::ios::in);
 	defer { file.close(); };
 	interpreter::read_stream(data_member_list, file, out, err);
 }

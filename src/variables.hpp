@@ -10,9 +10,15 @@ namespace variables {
 
 #ifdef _MSC_VER
 	static std::wstring name_of_process;
+
+	void create(std::vector<data_member>& data_member_list, std::wistream& in);
+
+	void set(std::vector<data_member>& data_member_list, std::wistream& in);
+
+	std::wstring get(std::vector<data_member>& data_member_list,
+					 std::wistream& in);
 #else
 	static std::string name_of_process;
-#endif
 
 	void create(std::vector<data_member>& data_member_list, std::istream& in);
 
@@ -20,6 +26,7 @@ namespace variables {
 
 	std::string get(std::vector<data_member>& data_member_list,
 					std::istream& in);
+#endif
 }
 
 #endif

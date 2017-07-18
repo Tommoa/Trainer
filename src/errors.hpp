@@ -14,7 +14,12 @@ namespace errors {
 		invalid_memory,
 		handle_not_set,
 	};
-	void dispatcher(std::ostream& out);
+	void dispatcher(
+#ifdef _MSC_VER
+		std::wostream& out);
+#else
+		std::ostream& out);
+#endif
 }
 
 #endif

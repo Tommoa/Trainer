@@ -2,7 +2,14 @@
 
 #include <exception>
 
-void errors::dispatcher(std::ostream& out) {
+void errors::dispatcher(
+
+#ifdef _MSC_VER
+	std::wostream& out) {
+#else
+	std::ostream& out) {
+#endif
+
 	try {
 		throw;
 	} catch (types T) {
@@ -34,7 +41,7 @@ void errors::dispatcher(std::ostream& out) {
 				out << "The program attempted to access invalid memory"
 					<< std::endl;
 				break;
-			case types::handle_not_set: 
+			case types::handle_not_set:
 				out << "The handle for this variable hasn't been set yet"
 					<< std::endl;
 				break;
