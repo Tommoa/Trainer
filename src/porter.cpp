@@ -51,7 +51,7 @@ void porter::stream_export(std::vector<data_member>& data_member_list,
 
 void porter::stream_import(std::vector<data_member>& data_member_list,
 #ifdef _MSC_VER
-						   std::wstream& in, std::wostream& out,
+						   std::wistream& in, std::wostream& out,
 						   std::wostream& err) {
 	std::wstring mode;
 	std::wstring filename;
@@ -67,7 +67,7 @@ void porter::stream_import(std::vector<data_member>& data_member_list,
 	if (!(in >> filename))
 		throw errors::types::incomplete_command;
 
-	if (mode != "binary" && mode != "file") {
+	if (mode != binary_file && mode != standard_file) {
 		throw errors::types::invalid_file_type;
 	}
 #ifdef _MSC_VER
@@ -75,7 +75,7 @@ void porter::stream_import(std::vector<data_member>& data_member_list,
 #else
 	std::ifstream file(
 #endif
-		filename, mode == "binary" ? std::ios::binary : std::ios::in);
+		filename, mode == binary_file ? std::ios::binary : std::ios::in);
 	defer { file.close(); };
 	interpreter::read_stream(data_member_list, file, out, err);
 }

@@ -10,7 +10,8 @@
 #include <sstream>
 
 #ifdef _MSC_VER
-const std::wstring new_executable_command = L"[[";
+const std::wstring new_executable_command = L"[";
+const std::wstring window_command = L"[[";
 const std::wstring create_variable_command = L"create";
 const std::wstring set_variable_command = L"set";
 const std::wstring get_variable_command = L"get";
@@ -18,7 +19,8 @@ const std::wstring export_variables_command = L"export";
 const std::wstring import_variables_command = L"import";
 const std::wstring exit_command = L"exit";
 #else
-const std::string new_executable_command = "[[";
+const std::string new_executable_command = "[";
+const std::string window_command = "[[";
 const std::string create_variable_command = "create";
 const std::string set_variable_command = "set";
 const std::string get_variable_command = "get";
@@ -49,7 +51,7 @@ void interpreter::read_stream(std::vector<data_member>& data_member_list,
 #endif
 		if (!(ss >> command)) // Empty line, just continue.
 			continue;
-		if (command.substr(0, 2) == new_executable_command) {
+		if (command.substr(0, 2) == window_command) {
 			variables::name_of_process =
 				ss.str().substr(2, ss.str().length() - 4);
 		}

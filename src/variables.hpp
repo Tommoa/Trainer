@@ -9,6 +9,9 @@
 namespace variables {
 
 #ifdef _MSC_VER
+#ifndef _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS
+#endif
 	static std::wstring name_of_process;
 
 	void create(std::vector<data_member>& data_member_list, std::wistream& in);

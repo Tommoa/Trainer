@@ -31,7 +31,7 @@ void variables::create(std::vector<data_member>& data_member_list,
 	if (name_of_process.length() > 0) {
 		temp.window_name = name_of_process;
 #ifdef _MSC_VER
-		auto window_handle = FindWindow(NULL, name_of_process.c_str());
+		auto window_handle = FindWindowW(NULL, name_of_process.c_str());
 		if (window_handle == 0)
 			temp.handle = 0;
 		else {
@@ -71,11 +71,12 @@ void variables::set(std::vector<data_member>& data_member_list,
 	throw errors::types::not_a_variable;
 }
 
-std::string variables::get(std::vector<data_member>& data_member_list,
 #ifdef _MSC_VER
+std::wstring variables::get(std::vector<data_member>& data_member_list,
 						   std::wistream& ss) {
 	std::wstring name;
 #else
+std::string variables::get(std::vector<data_member>& data_member_list,
 						   std::istream& ss) {
 	std::string name;
 #endif

@@ -9,6 +9,9 @@
 
 #ifdef _MSC_VER
 #include <Windows.h>
+#ifndef _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS
+#endif
 #endif
 
 class data_member {

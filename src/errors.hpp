@@ -17,6 +17,9 @@ namespace errors {
 	void dispatcher(
 #ifdef _MSC_VER
 		std::wostream& out);
+#ifndef _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS
+#endif
 #else
 		std::ostream& out);
 #endif

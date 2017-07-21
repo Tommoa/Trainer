@@ -1,7 +1,11 @@
 #include "data_member.hpp"
 
 #ifdef _MSC_VER
+#include "Snippets\defer.hpp"
 #include <Windows.h>
+#ifndef _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS
+#endif
 #endif
 
 #ifdef _MSC_VER
@@ -69,8 +73,11 @@ std::string data_member::get_type() {
 
 #ifdef _MSC_VER
 std::wstring data_member::get_data() {
-	if (*type == typeid(char*))
-		return (data.str);
+	if (*type == typeid(char*)) {
+		std::wstring ret(std::strlen(data.str)+1, L'#');
+		mbstowcs(&ret[0], data.str, std::strlen(data.str)+1);
+		return ret;
+	}
 	if (*type == typeid(int))
 		return std::to_wstring(data.integer);
 	if (*type == typeid(long))
@@ -106,7 +113,8 @@ void data_member::set_data(std::string data) {
 #endif
 	if (*type == typeid(char*)) {
 #ifdef _MSC_VER
-		char* tempcstr = char[data.length() * 2];
+		char* tempcstr = new char[data.length() * 2];
+		defer { delete[] tempcstr; };
 		std::wcstombs(tempcstr, data.c_str(), data.length() * 2);
 		this->data.str = tempcstr;
 #else
