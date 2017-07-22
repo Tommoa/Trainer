@@ -28,6 +28,7 @@ class data_member {
 	size_t handle = 0;
 #ifdef _MSC_VER
 	std::wstring window_name;
+	std::wstring process_name;
 	std::wstring name;
 	std::wstring get_type();
 	std::wstring get_data();
@@ -36,6 +37,7 @@ class data_member {
 #else
 	std::string
 		window_name;  // The name of the window that can be used to get PID
+	std::string process_name;
 	std::string name; // The name of the data_member
 	std::string get_type();
 	std::string get_data();

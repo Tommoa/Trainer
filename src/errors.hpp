@@ -13,6 +13,7 @@ namespace errors {
 		incomplete_command,
 		invalid_memory,
 		handle_not_set,
+		not_admin,
 	};
 	void dispatcher(
 #ifdef _MSC_VER

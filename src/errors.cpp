@@ -45,6 +45,10 @@ void errors::dispatcher(
 				out << "The handle for this variable hasn't been set yet"
 					<< std::endl;
 				break;
+			case types::not_admin:
+				out << "Program is not in administrator mode. Please run in"
+					<< " either administrator mode or use sudo." << std::endl;
+				break;
 			default:
 				out << "Unknown error" << std::endl;
 				break;

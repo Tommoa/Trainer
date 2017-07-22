@@ -52,8 +52,14 @@ void interpreter::read_stream(std::vector<data_member>& data_member_list,
 		if (!(ss >> command)) // Empty line, just continue.
 			continue;
 		if (command.substr(0, 2) == window_command) {
-			variables::name_of_process =
-				ss.str().substr(2, ss.str().length() - 4);
+			variables::set_window (
+				ss.str().substr(2, ss.str().length() - 4));
+			continue;
+		}
+		if (command.substr(0, 1) == new_executable_command) {
+			variables::set_executable(
+				ss.str().substr(1, ss.str().length() - 2));
+			continue;
 		}
 		if (command == create_variable_command) {
 			try {
