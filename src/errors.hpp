@@ -14,6 +14,7 @@ namespace errors {
 		invalid_memory,
 		handle_not_set,
 		not_admin,
+		cant_get_handle,
 	};
 	void dispatcher(
 #ifdef _MSC_VER

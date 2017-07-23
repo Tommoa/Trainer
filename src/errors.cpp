@@ -49,6 +49,10 @@ void errors::dispatcher(
 				out << "Program is not in administrator mode. Please run in"
 					<< " either administrator mode or use sudo." << std::endl;
 				break;
+			case types::cant_get_handle:
+				out << "Can't get the handle of the process. Please ensure it is"
+					<< " running" << std::endl;
+				break;
 			default:
 				out << "Unknown error" << std::endl;
 				break;
