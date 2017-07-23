@@ -24,7 +24,7 @@ class data_member {
 		bool boolean;
 	} data;
 
-	size_t get_offset();
+	size_t get_offset(int recursion_level = 0);
 
   public:
 	size_t handle = 0;
@@ -51,6 +51,7 @@ class data_member {
 	std::type_info* type;
 	void update_data();
 	template <typename T> void put_data(T data);
+	~data_member();
 };
 
 template <typename T> void data_member::put_data(T data) {

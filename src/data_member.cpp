@@ -9,6 +9,46 @@
 #endif
 
 #ifdef _MSC_VER
+#include <tlhelp32.h>
+
+size_t get_process_by_name(std::wstring name) {
+	PROCESSENTRY32 entry;
+	entry.dwSize = sizeof(PROCESSENTRY32);
+	std::string s(name.begin(), name.end());
+
+	HANDLE snapshot = CreateToolhelp32Snapshot(2, NULL);
+
+	if (Process32First(snapshot, &entry) == TRUE) {
+		while (Process32Next(snapshot, &entry) == TRUE) {
+			if (stricmp(entry.szExeFile, s.c_str()) == 0) {
+				return reinterpret_cast<size_t>(OpenProcess(PROCESS_ALL_ACCESS, FALSE, entry.th32ProcessID));
+			}
+		}
+	}
+ 
+	return 0;
+}
+#else
+size_t get_process_by_name(std::string name) {}
+#endif
+
+#ifdef _MSC_VER
+size_t get_process_by_window(std::wstring name) {
+	size_t handle;
+	auto window_handle = FindWindowW(NULL, name.c_str());
+	if (window_handle == 0)
+		handle = 0;
+	else {
+		auto pid = GetWindowThreadProcessId(window_handle, NULL);
+		handle = reinterpret_cast<size_t>(
+			OpenProcess(PROCESS_ALL_ACCESS, false, pid));
+	}
+}
+#else
+size_t get_process_by_window(std::string name) {}
+#endif
+
+#ifdef _MSC_VER
 void data_member::str_to_type_id(std::wstring str) {
 	if (str == L"string")
 		type = const_cast<std::type_info*>(&typeid(char*));
@@ -106,16 +146,26 @@ std::string data_member::get_data() {
 	throw errors::types::type_not_found;
 }
 
-size_t data_member::get_offset() { 
+size_t data_member::get_offset(int recursion_level) { 
 	size_t offset = 0;
 	for (auto i = 0; i < offsets.size() - 1; ++i) {
 		offset += offsets[i];
 #ifdef _MSC_VER
 		size_t nBytes = 0;
-		ReadProcessMemory(reinterpret_cast<void*>(handle),
-						  reinterpret_cast<void*>(offset),
-						  reinterpret_cast<void*>(&offset),
-						  sizeof(size_t), &nBytes);
+		if (!ReadProcessMemory(reinterpret_cast<void*>(handle),
+								reinterpret_cast<void*>(offset),
+								reinterpret_cast<void*>(&offset),
+								sizeof(size_t), &nBytes)) {
+			if (GetLastError() == ERROR_INVALID_HANDLE) {
+				if (process_name.length() > 0)
+					handle = get_process_by_name(process_name);
+				if (window_name.length() > 0)
+					handle = get_process_by_window(window_name);
+				if (recursion_level > 5)
+					throw errors::types::cant_get_handle;
+				return get_offset(++recursion_level);
+			}
+		}
 		if (nBytes != sizeof(size_t))
 			throw errors::types::invalid_memory;
 #else
@@ -267,4 +317,10 @@ void data_member::update_data() {
 		}
 	} 
 	throw errors::types::invalid_memory;
+}
+
+data_member::~data_member() {
+#ifdef _MSC_VER
+	CloseHandle(reinterpret_cast<void*>(handle)); 
+#endif 
 }
