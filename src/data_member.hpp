@@ -51,7 +51,6 @@ class data_member {
 	std::type_info* type;
 	void update_data();
 	template <typename T> void put_data(T data);
-	~data_member();
 };
 
 template <typename T> void data_member::put_data(T data) {

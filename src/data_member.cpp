@@ -128,7 +128,7 @@ std::wstring data_member::get_data() {
 	if (*type == typeid(double))
 		return std::to_wstring(data.prec);
 	if (*type == typeid(bool))
-		return std::to_wstring(data.boolean);
+		return (data.boolean? L"true" : L"false"); 
 #else
 std::string data_member::get_data() {
 	if (*type == typeid(char*))
@@ -142,7 +142,7 @@ std::string data_member::get_data() {
 	if (*type == typeid(double))
 		return std::to_string(data.prec);
 	if (*type == typeid(bool))
-		return std::to_string(data.boolean);
+		return (data.boolean? "true" : "false"); 
 #endif
 	throw errors::types::type_not_found;
 }
@@ -158,6 +158,7 @@ size_t data_member::get_offset(int recursion_level) {
 								reinterpret_cast<void*>(&offset),
 								sizeof(size_t), &nBytes)) {
 			if (GetLastError() == ERROR_INVALID_HANDLE) {
+				actual_offset = 0;
 				if (process_name.length() > 0)
 					handle = get_process_by_name(process_name);
 				if (window_name.length() > 0)
@@ -220,8 +221,12 @@ void data_member::set_data(std::string data) {
 	}
 	if (*type == typeid(bool)) {
 #ifdef _MSC_VER
+		if (data != L"true" && data != L"false")
+			throw errors::types::bool_incorrect_input;
 		this->data.boolean = data == L"true";
 #else
+		if (data != "true" && data != "false")
+			throw errors::types::bool_incorrect_input;
 		this->data.boolean = data == "true";
 #endif
 		if (handle)
@@ -233,10 +238,10 @@ void data_member::set_data(std::string data) {
 
 // TODO: Make this function work without injection.
 void data_member::update_data() {
-	if (!handle)
-		throw errors::types::handle_not_set;
 	if (!actual_offset)
 		actual_offset = get_offset();
+	if (!handle)
+		throw errors::types::handle_not_set;
 	for (int i = 0; i < 5; ++i) { 
 		if (*type == typeid(char*)) {
 #ifdef _MSC_VER
@@ -318,10 +323,4 @@ void data_member::update_data() {
 		}
 	} 
 	throw errors::types::invalid_memory;
-}
-
-data_member::~data_member() {
-#ifdef _MSC_VER
-	CloseHandle(reinterpret_cast<void*>(handle)); 
-#endif 
 }
