@@ -53,6 +53,9 @@ void errors::dispatcher(
 				out << "Can't get the handle of the process. Please ensure it is"
 					<< " running" << std::endl;
 				break;
+			case types::bool_incorrect_input:
+				out << "Incorrect input for boolean type. Please enter either 'true'"
+					<< " or 'false'." << std::endl;
 			default:
 				out << "Unknown error" << std::endl;
 				break;

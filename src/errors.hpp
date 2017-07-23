@@ -15,6 +15,7 @@ namespace errors {
 		handle_not_set,
 		not_admin,
 		cant_get_handle,
+		bool_incorrect_input,
 	};
 	void dispatcher(
 #ifdef _MSC_VER
