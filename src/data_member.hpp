@@ -24,8 +24,11 @@ class data_member {
 		bool boolean;
 	} data;
 
+	size_t get_offset();
+
   public:
 	size_t handle = 0;
+	size_t actual_offset = 0;
 #ifdef _MSC_VER
 	std::wstring window_name;
 	std::wstring process_name;
@@ -52,27 +55,21 @@ class data_member {
 
 template <typename T> void data_member::put_data(T data) {
 	if (!handle)
-		throw errors::types::handle_not_set;
-	size_t offset;
-	for (auto a : offsets) {
-		offset += a;
-#ifdef _MSC_VER
+		throw errors::types::handle_not_set; 
+	if (actual_offset == 0)
+		actual_offset = get_offset();
+#ifdef _MSC_VER 
+	// Attempt to access memory 5 times before giving up
+	for (int i = 0; i < 5; ++i) {
 		size_t nBytes;
-		ReadProcessMemory(
-			reinterpret_cast<void*>(handle), reinterpret_cast<void*>(offset),
-			reinterpret_cast<void*>(&offset), sizeof(size_t), &nBytes);
-		if (nBytes != sizeof(size_t))
-			throw errors::types::invalid_memory;
-#else
-#endif
+		WriteProcessMemory(reinterpret_cast<void*>(handle),
+						   reinterpret_cast<void*>(actual_offset),
+						   reinterpret_cast<void*>(&data), sizeof T, &nBytes);
+		if (nBytes == sizeof T)
+			return;
+		actual_offset = get_offset();
 	}
-#ifdef _MSC_VER
-	size_t nBytes;
-	WriteProcessMemory(reinterpret_cast<void*>(handle),
-					   reinterpret_cast<void*>(offset),
-					   reinterpret_cast<void*>(&data), sizeof T, &nBytes);
-	if (nBytes != sizeof T)
-		throw errors::types::invalid_memory;
+	throw errors::types::invalid_memory;
 #else
 #endif
 }

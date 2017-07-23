@@ -106,6 +106,25 @@ std::string data_member::get_data() {
 	throw errors::types::type_not_found;
 }
 
+size_t data_member::get_offset() { 
+	size_t offset = 0;
+	for (auto i = 0; i < offsets.size() - 1; ++i) {
+		offset += offsets[i];
+#ifdef _MSC_VER
+		size_t nBytes = 0;
+		ReadProcessMemory(reinterpret_cast<void*>(handle),
+						  reinterpret_cast<void*>(offset),
+						  reinterpret_cast<void*>(&offset),
+						  sizeof(size_t), &nBytes);
+		if (nBytes != sizeof(size_t))
+			throw errors::types::invalid_memory;
+#else
+#endif
+	}
+	offset += offsets[offsets.size() - 1];
+	return offset;
+}
+
 #ifdef _MSC_VER
 void data_member::set_data(std::wstring data) {
 #else
@@ -165,89 +184,87 @@ void data_member::set_data(std::string data) {
 void data_member::update_data() {
 	if (!handle)
 		throw errors::types::handle_not_set;
-	size_t offset = 0;
-	for (auto a : offsets) {
-		offset += a;
+	if (!actual_offset)
+		actual_offset = get_offset();
+	for (int i = 0; i < 5; ++i) { 
+		if (*type == typeid(char*)) {
 #ifdef _MSC_VER
-		size_t nBytes = 0;
-		ReadProcessMemory(reinterpret_cast<void*>(handle),
-						  reinterpret_cast<void*>(offset), &offset,
-						  sizeof(size_t), &nBytes);
-		if (nBytes != sizeof(size_t))
-			throw errors::types::invalid_memory;
+			size_t success = 0;
+			ReadProcessMemory(reinterpret_cast<void*>(handle),
+				reinterpret_cast<void*>(actual_offset), &this->data.str,
+				sizeof(char*), &success);
+			if (success == sizeof(char*))
+				return;
+			actual_offset = get_offset();
 #else
+			this->data.str = reinterpret_cast<char*>(offset);
 #endif
-	}
-	if (*type == typeid(char*)) {
+		}
+		if (*type == typeid(int)) {
 #ifdef _MSC_VER
-		size_t success = 0;
-		ReadProcessMemory(reinterpret_cast<void*>(handle),
-						  reinterpret_cast<void*>(offset), &this->data.str,
-						  sizeof(char*), &success);
-		if (success != sizeof(char*))
-			throw errors::types::invalid_memory;
+			size_t nBytes = 0;
+			ReadProcessMemory(reinterpret_cast<void*>(handle),
+				reinterpret_cast<void*>(actual_offset), &this->data.integer,
+				sizeof(int), &nBytes);
+			if (nBytes == sizeof(int))
+				return;
+			actual_offset = get_offset();
 #else
-		this->data.str = reinterpret_cast<char*>(offset);
+			this->data.integer = *reinterpret_cast<int*>(offset);
 #endif
-	}
-	if (*type == typeid(int)) {
+		}
+		if (*type == typeid(long)) {
 #ifdef _MSC_VER
-		size_t nBytes = 0;
-		ReadProcessMemory(reinterpret_cast<void*>(handle),
-						  reinterpret_cast<void*>(offset), &this->data.integer,
-						  sizeof(int), &nBytes);
-		if (nBytes != sizeof(int))
-			throw errors::types::invalid_memory;
+			size_t nBytes = 0;
+			ReadProcessMemory(reinterpret_cast<void*>(handle),
+				reinterpret_cast<void*>(actual_offset), &this->data.long_int,
+				sizeof(long), &nBytes);
+			if (nBytes == sizeof(long))
+				return;
+			actual_offset = get_offset();
 #else
-		this->data.integer = *reinterpret_cast<int*>(offset);
+			this->data.long_int = *reinterpret_cast<long*>(offset);
 #endif
-	}
-	if (*type == typeid(long)) {
+		}
+		if (*type == typeid(float)) {
 #ifdef _MSC_VER
-		size_t nBytes = 0;
-		ReadProcessMemory(reinterpret_cast<void*>(handle),
-						  reinterpret_cast<void*>(offset), &this->data.long_int,
-						  sizeof(long), &nBytes);
-		if (nBytes != sizeof(long))
-			throw errors::types::invalid_memory;
+			size_t nBytes = 0;
+			ReadProcessMemory(reinterpret_cast<void*>(handle),
+				reinterpret_cast<void*>(actual_offset), &this->data.floating,
+				sizeof(float), &nBytes);
+			if (nBytes == sizeof(float))
+				return;
+			actual_offset = get_offset();
 #else
-		this->data.long_int = *reinterpret_cast<long*>(offset);
+			this->data.floating = *reinterpret_cast<float*>(offset);
 #endif
-	}
-	if (*type == typeid(float)) {
+		}
+		if (*type == typeid(double)) {
 #ifdef _MSC_VER
-		size_t nBytes = 0;
-		ReadProcessMemory(reinterpret_cast<void*>(handle),
-						  reinterpret_cast<void*>(offset), &this->data.floating,
-						  sizeof(float), &nBytes);
-		if (nBytes != sizeof(float))
-			throw errors::types::invalid_memory;
+			size_t nBytes = 0;
+			ReadProcessMemory(reinterpret_cast<void*>(handle),
+				reinterpret_cast<void*>(actual_offset), &this->data.prec,
+				sizeof(double), &nBytes);
+			if (nBytes == sizeof(double))
+				return;
+			actual_offset = get_offset();
 #else
-		this->data.floating = *reinterpret_cast<float*>(offset);
+			this->data.prec = *reinterpret_cast<double*>(offset);
 #endif
-	}
-	if (*type == typeid(double)) {
+		}
+		if (*type == typeid(bool)) {
 #ifdef _MSC_VER
-		size_t nBytes = 0;
-		ReadProcessMemory(reinterpret_cast<void*>(handle),
-						  reinterpret_cast<void*>(offset), &this->data.prec,
-						  sizeof(double), &nBytes);
-		if (nBytes != sizeof(double))
-			throw errors::types::invalid_memory;
+			size_t nBytes = 0;
+			ReadProcessMemory(reinterpret_cast<void*>(handle),
+				reinterpret_cast<void*>(actual_offset), &this->data.boolean,
+				sizeof(bool), &nBytes);
+			if (nBytes == sizeof(bool))
+				return;
+			actual_offset = get_offset();
 #else
-		this->data.prec = *reinterpret_cast<double*>(offset);
+			this->data.boolean = *reinterpret_cast<bool*>(offset);
 #endif
-	}
-	if (*type == typeid(bool)) {
-#ifdef _MSC_VER
-		size_t nBytes = 0;
-		ReadProcessMemory(reinterpret_cast<void*>(handle),
-						  reinterpret_cast<void*>(offset), &this->data.boolean,
-						  sizeof(bool), &nBytes);
-		if (nBytes != sizeof(bool))
-			throw errors::types::invalid_memory;
-#else
-		this->data.boolean = *reinterpret_cast<bool*>(offset);
-#endif
-	}
+		}
+	} 
+	throw errors::types::invalid_memory;
 }
