@@ -14,7 +14,7 @@ size_t get_proccess_by_name(std::wstring name) {
 
 	if (Process32First(snapshot, &entry) == TRUE) {
 		while (Process32Next(snapshot, &entry) == TRUE) {
-			if (stricmp(entry.szExeFile, s.c_str()) == 0) {
+			if (_stricmp(entry.szExeFile, s.c_str()) == 0) {
 				return reinterpret_cast<size_t>(OpenProcess(PROCESS_ALL_ACCESS, FALSE, entry.th32ProcessID));
 			}
 		}
