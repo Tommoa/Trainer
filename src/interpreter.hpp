@@ -8,7 +8,7 @@
 #include <vector>
 
 namespace interpreter {
-	void read_stream(std::vector<data_member>& data_member_list,
+	bool read_stream(std::vector<data_member>& data_member_list,
 #ifdef _MSC_VER
 					 std::wistream& in, std::wostream& out, std::wostream& err);
 #ifndef _CRT_SECURE_NO_WARNINGS

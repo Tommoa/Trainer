@@ -29,7 +29,7 @@ const std::string import_variables_command = "import";
 const std::string exit_command = "exit";
 #endif
 
-void interpreter::read_stream(std::vector<data_member>& data_member_list,
+bool interpreter::read_stream(std::vector<data_member>& data_member_list,
 #ifdef _MSC_VER
 							  std::wistream& in, std::wostream& out,
 							  std::wostream& err) {
@@ -101,13 +101,16 @@ void interpreter::read_stream(std::vector<data_member>& data_member_list,
 			}
 			continue;
 		}
-		if (command == exit_command)
+		if (command == exit_command) {
+			if (ss >> command)
+				return false;
 			break;
+		}
 		try {
 			throw errors::types::not_a_command;
 		} catch (...) {
 			errors::dispatcher(err);
 		}
 	}
-	return;
+	return true;
 }
