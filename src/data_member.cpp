@@ -43,6 +43,7 @@ size_t get_process_by_window(std::wstring name) {
 		handle = reinterpret_cast<size_t>(
 			OpenProcess(PROCESS_ALL_ACCESS, false, pid));
 	}
+	return handle;
 }
 #else
 size_t get_process_by_window(std::string name) {}
