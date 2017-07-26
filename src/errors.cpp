@@ -2,13 +2,7 @@
 
 #include <exception>
 
-void errors::dispatcher(
-
-#ifdef _MSC_VER
-	std::wostream& out) {
-#else
-	std::ostream& out) {
-#endif
+void errors::dispatcher(std::ostream& out) {
 
 	try {
 		throw;

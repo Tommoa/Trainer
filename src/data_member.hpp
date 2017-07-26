@@ -29,15 +29,6 @@ class data_member {
   public:
 	size_t handle = 0;
 	size_t actual_offset = 0;
-#ifdef _MSC_VER
-	std::wstring window_name;
-	std::wstring process_name;
-	std::wstring name;
-	std::wstring get_type();
-	std::wstring get_data();
-	void str_to_type_id(std::wstring str);
-	void set_data(std::wstring data);
-#else
 	std::string
 		window_name;  // The name of the window that can be used to get PID
 	std::string process_name;
@@ -46,12 +37,12 @@ class data_member {
 	std::string get_data();
 	void str_to_type_id(std::string str);
 	void set_data(std::string data);
-#endif
 	std::vector<size_t> offsets; // The memory offsets to get to the data member
 	std::type_info* type;
 	void update_data();
 	template <typename T> void put_data(T data);
 };
+
 
 template <typename T> void data_member::put_data(T data) {
 	if (!handle)

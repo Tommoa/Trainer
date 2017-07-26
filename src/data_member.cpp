@@ -11,16 +11,15 @@
 #ifdef _MSC_VER
 #include <tlhelp32.h>
 
-size_t get_process_by_name(std::wstring name) {
+size_t get_process_by_name(std::string name) {
 	PROCESSENTRY32 entry;
 	entry.dwSize = sizeof(PROCESSENTRY32);
-	std::string s(name.begin(), name.end());
 
 	HANDLE snapshot = CreateToolhelp32Snapshot(2, NULL);
 
 	if (Process32First(snapshot, &entry) == TRUE) {
 		while (Process32Next(snapshot, &entry) == TRUE) {
-			if (stricmp(entry.szExeFile, s.c_str()) == 0) {
+			if (_stricmp(entry.szExeFile, name.c_str()) == 0) {
 				return reinterpret_cast<size_t>(OpenProcess(PROCESS_ALL_ACCESS, FALSE, entry.th32ProcessID));
 			}
 		}
@@ -31,39 +30,7 @@ size_t get_process_by_name(std::wstring name) {
 #else
 size_t get_process_by_name(std::string name) {}
 #endif
-
-#ifdef _MSC_VER
-size_t get_process_by_window(std::wstring name) {
-	size_t handle;
-	auto window_handle = FindWindowW(NULL, name.c_str());
-	if (window_handle == 0)
-		handle = 0;
-	else {
-		auto pid = GetWindowThreadProcessId(window_handle, NULL);
-		handle = reinterpret_cast<size_t>(
-			OpenProcess(PROCESS_ALL_ACCESS, false, pid));
-	}
-	return handle;
-}
-#else
-size_t get_process_by_window(std::string name) {}
-#endif
-
-#ifdef _MSC_VER
-void data_member::str_to_type_id(std::wstring str) {
-	if (str == L"string")
-		type = const_cast<std::type_info*>(&typeid(char*));
-	if (str == L"int" || str == L"integer")
-		type = const_cast<std::type_info*>(&typeid(int));
-	if (str == L"long")
-		type = const_cast<std::type_info*>(&typeid(long));
-	if (str == L"float")
-		type = const_cast<std::type_info*>(&typeid(float));
-	if (str == L"double")
-		type = const_cast<std::type_info*>(&typeid(double));
-	if (str == L"bool" || str == L"boolean")
-		type = const_cast<std::type_info*>(&typeid(bool));
-#else
+ 
 void data_member::str_to_type_id(std::string str) {
 	if (str == "string")
 		type = const_cast<std::type_info*>(&typeid(char*));
@@ -77,24 +44,8 @@ void data_member::str_to_type_id(std::string str) {
 		type = const_cast<std::type_info*>(&typeid(double));
 	if (str == "bool" || str == "boolean")
 		type = const_cast<std::type_info*>(&typeid(bool));
-#endif
 }
 
-#ifdef _MSC_VER
-std::wstring data_member::get_type() {
-	if (*type == typeid(char*))
-		return L"string";
-	if (*type == typeid(int))
-		return L"int";
-	if (*type == typeid(long))
-		return L"long";
-	if (*type == typeid(float))
-		return L"float";
-	if (*type == typeid(double))
-		return L"double";
-	if (*type == typeid(bool))
-		return L"bool";
-#else
 std::string data_member::get_type() {
 	if (*type == typeid(char*))
 		return "string";
@@ -108,28 +59,9 @@ std::string data_member::get_type() {
 		return "double";
 	if (*type == typeid(bool))
 		return "bool";
-#endif
 	throw errors::types::type_not_found;
 }
 
-#ifdef _MSC_VER
-std::wstring data_member::get_data() {
-	if (*type == typeid(char*)) {
-		std::wstring ret(std::strlen(data.str)+1, L'#');
-		mbstowcs(&ret[0], data.str, std::strlen(data.str)+1);
-		return ret;
-	}
-	if (*type == typeid(int))
-		return std::to_wstring(data.integer);
-	if (*type == typeid(long))
-		return std::to_wstring(data.long_int);
-	if (*type == typeid(float))
-		return std::to_wstring(data.floating);
-	if (*type == typeid(double))
-		return std::to_wstring(data.prec);
-	if (*type == typeid(bool))
-		return (data.boolean? L"true" : L"false"); 
-#else
 std::string data_member::get_data() {
 	if (*type == typeid(char*))
 		return (data.str);
@@ -143,7 +75,6 @@ std::string data_member::get_data() {
 		return std::to_string(data.prec);
 	if (*type == typeid(bool))
 		return (data.boolean? "true" : "false"); 
-#endif
 	throw errors::types::type_not_found;
 }
 
@@ -161,8 +92,6 @@ size_t data_member::get_offset(int recursion_level) {
 				actual_offset = 0;
 				if (process_name.length() > 0)
 					handle = get_process_by_name(process_name);
-				if (window_name.length() > 0)
-					handle = get_process_by_window(window_name);
 				if (recursion_level > 5)
 					throw errors::types::cant_get_handle;
 				return get_offset(++recursion_level);
@@ -177,20 +106,9 @@ size_t data_member::get_offset(int recursion_level) {
 	return offset;
 }
 
-#ifdef _MSC_VER
-void data_member::set_data(std::wstring data) {
-#else
 void data_member::set_data(std::string data) {
-#endif
 	if (*type == typeid(char*)) {
-#ifdef _MSC_VER
-		char* tempcstr = new char[data.length() * 2];
-		defer { delete[] tempcstr; };
-		std::wcstombs(tempcstr, data.c_str(), data.length() * 2);
-		this->data.str = tempcstr;
-#else
 		this->data.str = const_cast<char*>(data.c_str());
-#endif
 		if (handle)
 			put_data(this->data.str);
 		return;
@@ -220,15 +138,9 @@ void data_member::set_data(std::string data) {
 		return;
 	}
 	if (*type == typeid(bool)) {
-#ifdef _MSC_VER
-		if (data != L"true" && data != L"false")
-			throw errors::types::bool_incorrect_input;
-		this->data.boolean = data == L"true";
-#else
 		if (data != "true" && data != "false")
 			throw errors::types::bool_incorrect_input;
 		this->data.boolean = data == "true";
-#endif
 		if (handle)
 			put_data(this->data.boolean);
 		return;
